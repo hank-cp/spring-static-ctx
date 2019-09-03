@@ -1,11 +1,6 @@
-[![GitHub release](https://img.shields.io/github/release/hank-cp/pf4j-spring-boot.svg)](https://github.com/hank-cp/pf4j-spring-boot/releases)
-[![](https://jitpack.io/v/hank-cp/pf4j-spring-boot.svg)](https://jitpack.io/#hank-cp/pf4j-spring-boot)
-[![Travis (.org)](https://img.shields.io/travis/hank-cp/pf4j-spring-boot.svg)](https://travis-ci.org/hank-cp/pf4j-spring-boot)
-![GitHub](https://img.shields.io/github/license/hank-cp/pf4j-spring-boot.svg)
-![GitHub last commit](https://img.shields.io/github/last-commit/hank-cp/pf4j-spring-boot.svg)
-<!--
-[![](https://jitpack.io/v/hank-cp/pf4j-spring-boot.svg)](https://jitpack.io/#hank-cp/pf4j-spring-boot)
--->
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/hank-cp/spring-static-ctx)
+![JitPack](https://img.shields.io/jitpack/v/github/hank-cp/spring-static-ctx)
+![GitHub](https://img.shields.io/github/license/hank-cp/spring-static-ctx)
 
 
 A Spring helper to get `ApplicationContext` in static way.
@@ -30,8 +25,8 @@ A Spring helper to get `ApplicationContext` in static way.
     </repositories>
      
     <dependency>
-        <groupId>com.github.hank-cp.pf4j-spring-boot</groupId>
-        <artifactId>pf4j-spring-boot-starter</artifactId>
+        <groupId>com.github.hank-cp</groupId>
+        <artifactId>spring-static-ctx</artifactId>
         <version>0.1.0</version>
     </dependency>
     ```
@@ -45,7 +40,7 @@ A Spring helper to get `ApplicationContext` in static way.
     }
         
     dependencies {
-        implementation 'com.github.hank-cp.pf4j-spring-boot:pf4j-spring-boot-starter:0.1.0'
+        implementation 'com.github.hank-cp:spring-static-ctx:0.1.0'
     }
     ```
 
