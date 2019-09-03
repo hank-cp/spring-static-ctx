@@ -26,11 +26,11 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Get {@link ApplicationContext> in static way. Since {@link ApplicationContext}
+ * Get {@link ApplicationContext} in static way. Since {@link ApplicationContext}
  * is bound to static class in this way, Plugin shouldn't use it directly, but
  * need to inherit it as a new privite class and register it in its own configuration.
  *
- * To register main {@link ApplicationContext}
+ * To register main {@link ApplicationContext}:
  * ```
  * @Bean
  * public ApplicationContextAware multiApplicationContextProviderRegister() {
