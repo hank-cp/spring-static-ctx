@@ -9,7 +9,7 @@ A Spring helper to get `ApplicationContext` in static way.
 ```
     @Bean
     public ApplicationContextAware multiApplicationContextProviderRegister() {
-        return MultiApplicationContextProvider::registerApplicationContext;
+        return ApplicationContextProvider::registerApplicationContext;
     }
 
     ApplicationContextProvider.getBean(MyBean.class);
