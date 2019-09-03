@@ -1,0 +1,95 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+    dependencies {
+        classpath 'ch.raffael.markdown-doclet:markdown-doclet:1.4'
+    }
+}
+
+plugins {
+    id 'idea'
+    id 'java-library'
+    id 'maven'
+}
+
+//*************************************************************************
+// IDEA
+//*************************************************************************
+
+idea {
+    module {
+        inheritOutputDirs = true
+        downloadSources = true
+    }
+}
+
+//*************************************************************************
+// Sub Project Config
+//*************************************************************************
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+apply plugin: 'java'
+apply plugin: 'ch.raffael.markdown-doclet'
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+group = 'org.laxture.spring-static-ctx'
+
+dependencies {
+    implementation 'org.springframework:spring-context:5.1.8.RELEASE'
+}
+
+//*************************************************************************
+// Properties
+//*************************************************************************
+
+version = "0.1.0"
+
+task setProperties {
+    doFirst {
+        project.ext.executable = "$project.name"
+    }
+}
+
+//*************************************************************************
+// Compile & Assemble
+//*************************************************************************
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(AbstractCompile) {
+    options.encoding = 'UTF-8'
+}
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    manifest.attributes provider: 'gradle'
+    enabled true
+    doFirst {
+        archiveFileName = "$project.name-$version.${archiveExtension.get()}"
+    }
+}
