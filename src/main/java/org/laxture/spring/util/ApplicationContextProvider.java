@@ -34,7 +34,7 @@ import java.util.Optional;
  * ```
  * @Bean
  * public ApplicationContextAware multiApplicationContextProviderRegister() {
- *     return MultiApplicationContextProvider::registerApplicationContext;
+ *     return ApplicationContextProvider::registerApplicationContext;
  * }
  * ```
  * @author <a href="https://github.com/hank-cp">Hank CP</a>
