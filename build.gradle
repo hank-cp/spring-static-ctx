@@ -64,13 +64,7 @@ dependencies {
 // Properties
 //*************************************************************************
 
-version = "0.1.0"
-
-task setProperties {
-    doFirst {
-        project.ext.executable = "$project.name"
-    }
-}
+version = "0.1.1"
 
 //*************************************************************************
 // Compile & Assemble

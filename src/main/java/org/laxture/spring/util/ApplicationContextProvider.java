@@ -84,7 +84,7 @@ public class ApplicationContextProvider {
     @SuppressWarnings("unchecked")
     public static <T> T getBean(ClassLoader classLoader, String beanName) {
         ApplicationContext ctx = getApplicationContext(classLoader);
-        assert ctx != null;
+        if (ctx == null) return null;
         return (T) ctx.getBean(beanName);
     }
 
