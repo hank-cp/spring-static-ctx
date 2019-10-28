@@ -15,6 +15,7 @@
  */
 package org.laxture.spring.util;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
@@ -73,8 +74,12 @@ public class ApplicationContextProvider {
 
     public static <T> T getBean(ClassLoader classLoader, Class<T> clazz) {
         ApplicationContext ctx = getApplicationContext(classLoader);
-        assert ctx != null;
-        return ctx.getBean(clazz);
+        if (ctx == null) return null;
+        try {
+            return ctx.getBean(clazz);
+        } catch (NoSuchBeanDefinitionException ex) {
+            return null;
+        }
     }
 
     public static <T> T getBean(Class<?> probeClazz, String beanName) {
@@ -85,7 +90,11 @@ public class ApplicationContextProvider {
     public static <T> T getBean(ClassLoader classLoader, String beanName) {
         ApplicationContext ctx = getApplicationContext(classLoader);
         if (ctx == null) return null;
-        return (T) ctx.getBean(beanName);
+        try {
+            return (T) ctx.getBean(beanName);
+        } catch (NoSuchBeanDefinitionException ex) {
+            return null;
+        }
     }
 
     public static String getMessage(Class<?> probeClazz, String msgKey, Object...params) {
