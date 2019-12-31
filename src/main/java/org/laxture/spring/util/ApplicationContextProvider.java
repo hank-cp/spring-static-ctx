@@ -104,7 +104,7 @@ public class ApplicationContextProvider {
     public static String getMessage(ClassLoader classLoader, String msgKey, Object...params) {
         assert ctxCache.containsKey(classLoader);
         try {
-            return Optional.ofNullable(getBean(MessageSource.class)).map(bean -> bean.getMessage(
+            return Optional.ofNullable(getBean(classLoader, MessageSource.class)).map(bean -> bean.getMessage(
                     msgKey, params, LocaleContextHolder.getLocale())).orElse(msgKey);
         } catch (NoSuchMessageException ignored) {
             return msgKey;
