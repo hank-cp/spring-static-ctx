@@ -1,3 +1,14 @@
+def checkProperty(Project project, String propName) {
+    if (!project.hasProperty(propName)) return false
+    String prop = project.property(propName)
+    return prop != null && prop.length() > 0
+}
+
+def getPropertyOrElse(Project project, String propName, String alternative) {
+    if (!checkProperty(project, propName)) return alternative
+    return project.property(propName)
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -38,33 +49,33 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'ch.raffael.markdown-doclet'
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 group = 'org.laxture.spring-static-ctx'
 
 dependencies {
-    implementation 'org.springframework:spring-context:5.1.8.RELEASE'
+    implementation 'org.springframework:spring-context:5.2.0.RELEASE'
 }
 
 //*************************************************************************
 // Properties
 //*************************************************************************
 
-version = "0.1.2"
+Properties localProp = new Properties()
+try {
+    localProp.load(project.rootProject.file('local.properties').newDataInputStream())
+} catch(Exception ignored) {}
+for (String propKey in localProp.keys()) {
+    ext.set(propKey, localProp.get(propKey))
+}
+ext."signing.secretKeyRingFile" = rootProject.file('publish.gpg')
+
+task setProperties {
+    doFirst {
+        project.ext.executable = "$project.name"
+    }
+}
 
 //*************************************************************************
 // Compile & Assemble
@@ -86,4 +97,81 @@ jar {
     doFirst {
         archiveFileName = "$project.name-$version.${archiveExtension.get()}"
     }
+}
+
+//*************************************************************************
+// Maven
+//*************************************************************************
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier.set('javadoc')
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+group = 'org.laxture'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = project.getGroup()
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = project.name
+                description = 'A Spring helper to get `ApplicationContext` in static way.'
+                url = 'https://github.com/hank-cp/spring-static-ctx'
+                organization {
+                    name = 'org.laxture'
+                    url = 'https://laxture.org'
+                }
+                issueManagement {
+                    system = 'GitHub'
+                    url = 'https://github.com/hank-cp/spring-static-ctx/issues'
+                }
+                license {
+                    name = 'Apache License 3.0'
+                    url = 'https://github.com/hank-cp/spring-static-ctx/blob/master/LICENSE'
+                    distribution = 'repo'
+                }
+                scm {
+                    url = 'https://github.com/hank-cp/spring-static-ctx'
+                    connection = 'scm:git:git://github.com/hank-cp/spring-static-ctx.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:hank-cp/spring-static-ctx.git'
+                }
+                developers {
+                    developer {
+                        name = 'Hank CP'
+                        email = 'true.cp@gmail.com'
+                    }
+                }
+            }
+            repositories {
+                maven {
+                    def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+                    def stagingRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : stagingRepoUrl
+                    credentials {
+                        username getPropertyOrElse(project, 'sonatypeUsername', '')
+                        password getPropertyOrElse(project, 'sonatypePassword', '')
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
